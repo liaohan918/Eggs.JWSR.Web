@@ -1,0 +1,16 @@
+{
+  "id": "1980962",
+  "name": "eggs.jwsr.web",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "579286",
+      "name": "点赞",
+      "font_class": "dianzan",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    }
+  ]
+}
