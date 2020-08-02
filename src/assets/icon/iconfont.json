@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "978354",
+      "name": "微信",
+      "font_class": "gongzhonghao",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "7239850",
+      "name": "qq",
+      "font_class": "qq",
+      "unicode": "e746",
+      "unicode_decimal": 59206
+    },
+    {
       "icon_id": "579286",
       "name": "点赞",
       "font_class": "dianzan",

@@ -240,7 +240,7 @@
 	}
 	.top-backgourd-color-white {
 		background-color: #ffffff;
-		box-shadow: 0 1px 1px rgba(100, 100, 100, 0.1);
+		box-shadow: 0 1px 1px rgba(100, 100, 100, 0.2);
 	}
 	/* 顶部左侧logo */
 	.top-logo {
@@ -310,7 +310,7 @@
 	.picture {
 		padding: 100px 361px;
 		background-color: #f5f6f9;
-		background: url(../assets/img/homebg.jpg) no-repeat;
+		background: url(../../public/img/homebg.jpg) no-repeat;
 		filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')";
 		-moz-background-size: 100% 100%;
 		background-size: 100% 100%;
@@ -337,7 +337,8 @@
 	.footer {
 		padding: 100px 361px;
 		text-align: center;
-		background-color: #fbfcff;
+		/* background-color: #fbfcff; */
+		background-color: #282828;
 	}
 
 	.qr-code {
