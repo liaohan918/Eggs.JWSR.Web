@@ -33,12 +33,12 @@
 				<swiper ref="mySwiper" :options="swiperOptions">
 					<swiper-slide>
 						<div class="swiper-content">
-							<img src="../../public/swiper/banner7.png" alt="">
+							<img src="../../public/swiper/Home/banner7.png" alt="">
 						</div>
 					</swiper-slide>
 					<swiper-slide>
 						<div class="swiper-content">
-							<img src="../../public/swiper/banner8.png" alt="">
+							<img src="../../public/swiper/Home/banner8.png" alt="">
 						</div>
 					</swiper-slide>
 					<div class="swiper-pagination" slot="pagination"></div>
@@ -103,7 +103,7 @@
 		</el-backtop>
 		<!-- 二维码 -->
 		<div class="qr-code">
-			<img src="../../public/swiper/QRCode.jpg" alt="" width="100%" height="100%">
+			<img src="../../public/swiper/Home/QRCode.jpg" alt="" width="100%" height="100%" style="border-radius: 25px;">
 		</div>
 	</div>
 </template>
@@ -146,14 +146,14 @@
 					}
 				},
 				ScrollOverSwiper: false, //轮播图滚动出页面范围
-				chinesePicture: require("../../public/swiper/banner8.png"), //国画
-				oilPaintingPicture: require("../../public/swiper/banner8.png"), //油画
-				calligraphyPicture: require("../../public/swiper/banner7.png"), //书法
-				otherPicture: require("../../public/swiper/banner7.png"),
+				chinesePicture: require("../../public/swiper/Home/banner8.png"), //国画
+				oilPaintingPicture: require("../../public/swiper/Home/banner8.png"), //油画
+				calligraphyPicture: require("../../public/swiper/Home/banner7.png"), //书法
+				otherPicture: require("../../public/swiper/Home/banner7.png"),
 				contentList: [ //文章列表内容
 					{
 						url: "", //超链接
-						src: require("../../public/swiper/banner7.png"),
+						src: require("../../public/swiper/Home/banner7.png"),
 						title: "文章1", //文章标题
 						visits: 6666, //访问量
 						likes: 1000, //点赞量
@@ -162,7 +162,7 @@
 					},
 					{
 						url: "", //超链接
-						src: require("../../public/swiper/banner7.png"),
+						src: require("../../public/swiper/Home/banner7.png"),
 						title: "文章2", //文章标题
 						visits: 6666, //访问量
 						likes: 1000, //点赞量
@@ -171,7 +171,7 @@
 					},
 					{
 						url: "", //超链接
-						src: require("../../public/swiper/banner7.png"),
+						src: require("../../public/swiper/Home/banner7.png"),
 						title: "文章3", //文章标题
 						visits: 6666, //访问量
 						likes: 1000, //点赞量
@@ -180,7 +180,7 @@
 					},
 					{
 						url: "", //超链接
-						src: require("../../public/swiper/banner8.png"),
+						src: require("../../public/swiper/Home/banner8.png"),
 						title: "文章4", //文章标题
 						visits: 6666, //访问量
 						likes: 1000, //点赞量
@@ -189,7 +189,7 @@
 					},
 					{
 						url: "", //超链接
-						src: require("../../public/swiper/banner8.png"),
+						src: require("../../public/swiper/Home/banner8.png"),
 						title: "文章5", //文章标题
 						visits: 6666, //访问量
 						likes: 1000, //点赞量
@@ -249,6 +249,10 @@
 		font-family: "PingFang SC";
 		font-size: 25px;
 	}
+	.top-logo img{
+		margin-right: 20px;
+	}
+	
 	/* 顶部右侧导航 */
 	.top-nav {
 		margin-top: 10px;
@@ -349,10 +353,6 @@
 		top: 200px;
 		right: 300px;
 		z-index: 999;
-	}
-
-	.qr-code img {
-		border-radius: 25px;
 	}
 
 	.slogan {

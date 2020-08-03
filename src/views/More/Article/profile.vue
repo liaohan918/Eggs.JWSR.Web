@@ -26,7 +26,7 @@
 		props: {
 			headProtrait: {
 				type: String,
-				default: "img/homebg.jpg"
+				default: ""
 			},
 			Nickname: {
 				type: String,
