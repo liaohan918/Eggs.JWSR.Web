@@ -1,7 +1,7 @@
 <template>
 	<div id="SampleReels">
 		<div class="container-main">
-			<vue-waterfall-easy ref="waterfall" :imgsArr="imgsArr" @scrollReachBottom="getData" :maxCols="4">				
+			<vue-waterfall-easy ref="waterfall" :imgsArr="imgsArr" @scrollReachBottom="getData" :maxCols="4">
 			</vue-waterfall-easy>
 		</div>
 	</div>
@@ -16,9 +16,7 @@
 		},
 		data() {
 			return {
-				//waterfallWidth: 0,//瀑布流显示区域宽度
-				imgsArr: [
-					{
+				imgsArr: [{
 						src: '/img/homebg.jpg',
 						href: ''
 					},
@@ -94,40 +92,44 @@
 			}
 		},
 		methods: {
-			handleScroll() {
-				// console.log("滚动")
-				this.getData()
-				
+			handleScroll(e) {
+				let waterfallHeight = this.$refs.waterfall.$el.offsetHeight //瀑布流布局高度
+				let colsHeightArrMax = Math.max(...this.$refs.waterfall.colsHeightArr) //最高的那一列
+				if (colsHeightArrMax > waterfallHeight) { //图片高度已达瀑布流容器底部
+					//已经可以触发瀑布流自带加载图片方法
+					return
+				}
+				if (e.deltaY > 0) //向下滚动
+					this.getData()
 			},
-			getData(){
-				this.imgsArr.push(
-					{
-						src: '/img/homebg.jpg',
-						href: ''
-					})
-				
+			getData() {
+				this.imgsArr.push({
+					src: '/img/homebg.jpg',
+					href: ''
+				})
 			}
 		},
 		mounted() {
-			console.log(this.$refs.waterfall.$el)//.addEventListener('scroll', this.handleScroll)
 			//监听鼠标滚动事件，因为当图片不足够多时，是不会让瀑布流出现滚动条和触发瀑布流滚动加载图片事件，这时候就需要手动监听滚动
-			if(document.addEventListener) 
+			if (document.addEventListener)
 				window.addEventListener('DOMMouseScroll', this.handleScroll, false)
-			window.onmousewheel=document.onmousewheel=this.handleScroll;
+			window.onmousewheel = document.onmousewheel = this.handleScroll;
 		}
 	}
 </script>
 <style scoped>
-	#SampleReels{
+	#SampleReels {
 		width: 100%;
 		overflow: hidden;
 	}
+
 	.container-main {
 		/* 瀑布流页面高度 */
 		/* height: calc(100vh - 62px - 218px - 15px); */
 		height: calc(100vh - 62px - 15px);
 		overflow: hidden;
-	}	
+	}
+
 	.backtop {
 		height: 100%;
 		width: 100%;

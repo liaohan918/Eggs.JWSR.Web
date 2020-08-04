@@ -47,8 +47,16 @@
 		},
 		data() {
 			return {
-				query: '',//查询框内容
+				query: '', //查询框内容
 				activeIndex: 0
+			}
+		},
+		watch: {
+			currentIndex: {
+				immediate: true, // 这句重要
+				handler(val) {
+					this.activeIndex = this.currentIndex
+				}
 			}
 		},
 		methods: {
@@ -61,7 +69,7 @@
 			}
 		},
 		created() {
-			this.activeIndex = this.currentIndex
+			// this.activeIndex = this.currentIndex
 		}
 	}
 </script>

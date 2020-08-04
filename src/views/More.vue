@@ -31,7 +31,7 @@
 			</div>
 		</el-backtop>
 		<!-- 底部声明 -->
-		<div v-if="!this.$route.path=='/More/SampleReels'" class="footer" ref="footer" :class="containerIsEmpty? 'footer-fixed' : ''">
+		<div v-if="showStatement" class="footer" ref="footer" :class="containerIsEmpty? 'footer-fixed' : ''">
 			<div class="statement">
 				<p>备案号:XXXXXXXX</p>
 			</div>
@@ -99,7 +99,8 @@
 				ScrollOverSwiper: false, //轮播图是否离开界面
 				leftNavigationOffSetTop: 580, //左侧导航栏偏移量，当滚动大于该偏移量时停靠
 				leftNavigationStopOffSet: 75, //左侧导航栏停靠位置
-				containerIsEmpty: false
+				containerIsEmpty: false,
+				showStatement: true//是否显示底部声明
 			}
 		},
 		components: {
@@ -133,14 +134,15 @@
 					this.$destroy() //返回首页需要销毁发现页组件实例，因为发现页是被缓存的，点击首页后再回来，导航会停留在首页标签
 				} else if (payload == "/More/Article") {
 					this.leftNavigationOffSetTop = 580
+					this.showStatement = true
 				} else {
 					this.leftNavigationOffSetTop = 75
+					this.showStatement = false
 				}
 			},
 			computeContainerIsEmpty() {
 				let bodyHeight = document.body.clientHeight //body高度
 				let screenHeight = window.screen.height //屏幕高
-				console.log(`内容高度:${bodyHeight},屏幕高度:${screenHeight}`)
 				if (bodyHeight < screenHeight) {
 					this.containerIsEmpty = true
 				} else {
@@ -156,15 +158,20 @@
 			this.computeContainerIsEmpty()
 		},
 		updated() {
-			console.log("当前屏幕高度：" + document.body.clientHeight)
 			this.computeContainerIsEmpty()
+		},
+		beforeRouteEnter(to, from, next) {			
+			next(vm=>{
+				if(to.path == '/More/SampleReels'){
+					vm.activePageIndex = 2
+					vm.showStatement = false
+				}
+			})
 		}
 	}
 </script>
 <style scoped>
 	#More {
-		/* display: flex;
-		flex-direction: column; */
 		height: 100%;
 	}
 
