@@ -3,7 +3,7 @@
 		<!-- 顶部导航栏 -->
 		<div class="top" ref="top">
 			<div class="nav">
-				<nav-bar :title="title" :links="NavBarItemList" :currentIndex="activePageIndex" @toRoute="toRoute" @onQuery="onQuery"></nav-bar>
+				<nav-bar :title="title" :links="NavBarItemList" :currentIndex="activePageIndex" @toRoute="toRoute" @onQuery="onQuery" @toEditor="toEditor"></nav-bar>
 			</div>
 		</div>
 		<!-- 中间内容展示区 -->
@@ -13,7 +13,8 @@
 			</keep-alive>
 		</div>
 		<!-- 左侧导航栏 -->
-		<div :class="ScrollOverSwiper ? 'navigation-fixed' : 'navigation'" :style="{'top' : this.$route.path=='/More/SampleReels'? this.leftNavigationStopOffSet+'px' : ''}">
+		<div class="navigation"	:class="{'navigation-fixed' : ScrollOverSwiper, 'navigation-visibilty-hidden' : !showLeftNavigation }" 
+			:style="{'top' : this.isSampleReels ? this.leftNavigationStopOffSet+'px' : ''}">
 			<el-row class="tac">
 				<el-col>
 					<el-menu default-active="1" class="el-menu-vertical-demo">
@@ -31,7 +32,7 @@
 			</div>
 		</el-backtop>
 		<!-- 底部声明 -->
-		<div v-if="showStatement" class="footer" ref="footer" :class="containerIsEmpty? 'footer-fixed' : ''">
+		<div v-if="showStatement" class="footer" ref="footer" :class="isFixStatementBottom? 'footer-fixed' : ''">
 			<div class="statement">
 				<p>备案号:XXXXXXXX</p>
 			</div>
@@ -99,8 +100,10 @@
 				ScrollOverSwiper: false, //轮播图是否离开界面
 				leftNavigationOffSetTop: 580, //左侧导航栏偏移量，当滚动大于该偏移量时停靠
 				leftNavigationStopOffSet: 75, //左侧导航栏停靠位置
-				containerIsEmpty: false,
-				showStatement: true//是否显示底部声明
+				isFixStatementBottom: false,//是否让底部声明固定在页面底部Fix
+				showStatement: true, //是否显示底部声明
+				showLeftNavigation: true, //是否显示左侧导航条
+				isSampleReels: false//当前页是否为作品集
 			}
 		},
 		components: {
@@ -123,46 +126,80 @@
 					this.ScrollOverSwiper = false
 				}
 			},
-			toRoute(payload) {
-				// console.log(payload)				
+			toRoute(payload) {			
 				if (payload == this.$router.currentRoute.path)
 					return
 				this.$router.push({
 					path: payload
 				})
-				if (payload == "/") {
-					this.$destroy() //返回首页需要销毁发现页组件实例，因为发现页是被缓存的，点击首页后再回来，导航会停留在首页标签
-				} else if (payload == "/More/Article") {
-					this.leftNavigationOffSetTop = 580
-					this.showStatement = true
+			},
+			toEditor(){
+				// console.log("跳转到写文章界面")
+				this.$router.push({
+					name: 'Editor'
+				})
+			},
+			//是否出现垂直滚动条
+			hasScrollbar() {
+			    //return document.body.scrollHeight > (window.innerHeight || document.documentElement.clientHeight);
+			},
+			//当container高度不足时，声明部分div就固定在底部
+			computeIsFixStatementBottom() {
+				let bodyHeight = document.body.scrollHeight //body高度
+				let screenHeight = document.documentElement.clientHeight //屏幕高
+				if (bodyHeight < screenHeight) {
+					this.isFixStatementBottom = true
 				} else {
-					this.leftNavigationOffSetTop = 75
-					this.showStatement = false
+					this.isFixStatementBottom = false
 				}
 			},
-			computeContainerIsEmpty() {
-				let bodyHeight = document.body.clientHeight //body高度
-				let screenHeight = window.screen.height //屏幕高
-				if (bodyHeight < screenHeight) {
-					this.containerIsEmpty = true
-				} else {
-					this.containerIsEmpty = false
+			computedStatementAndNavigationState(routeName){//计算底部声明和左侧导航栏的状态
+				if (routeName == "Home") {
+					this.$destroy() //返回首页需要销毁发现页组件实例，因为发现页是被缓存的，点击首页后再回来，导航会停留在首页标签
+				} else if (routeName == "Article") {
+					this.leftNavigationOffSetTop = 580
+					this.showStatement = true
+					this.showLeftNavigation = true
+				} else if(routeName == "SampleReels"){
+					this.leftNavigationOffSetTop = 75
+					this.showStatement = false
+					this.showLeftNavigation = true
+				} else{
+					this.showStatement = false
+					this.showLeftNavigation = false
+				}
+				if(routeName == "SampleReels"){
+					this.isSampleReels = true
+				}else{
+					this.isSampleReels = false
 				}
 			}
 		},
-		computed: {
-
+		computed:{
+		},
+		watch: {
+			$route(to, from) {
+				this.computedStatementAndNavigationState(to.name)
+				this.computeIsFixStatementBottom()
+			}
+		},
+		created() {
+			this.$bus.$on("reloadContent", () => {
+				this.$nextTick(() => {
+					this.computeIsFixStatementBottom()
+				})
+			})
 		},
 		mounted() {
-			window.addEventListener('scroll', this.handleScroll)
-			this.computeContainerIsEmpty()
+			window.addEventListener('scroll', this.handleScroll)//监听页面滚动事件
+			this.computedStatementAndNavigationState(this.$route.name)
 		},
 		updated() {
-			this.computeContainerIsEmpty()
+			this.computeIsFixStatementBottom()
 		},
-		beforeRouteEnter(to, from, next) {			
-			next(vm=>{
-				if(to.path == '/More/SampleReels'){
+		beforeRouteEnter(to, from, next) {
+			next(vm => {
+				if (to.path == '/More/SampleReels') {//选择作品画面并刷新时
 					vm.activePageIndex = 2
 					vm.showStatement = false
 				}
@@ -205,6 +242,11 @@
 		top: 65px;
 		left: 250px;
 		width: 100px;
+	}
+	
+	/* 隐藏左侧导航栏 */
+	.navigation-visibilty-hidden{
+		visibility: hidden;
 	}
 
 	.el-menu-vertical-demo {

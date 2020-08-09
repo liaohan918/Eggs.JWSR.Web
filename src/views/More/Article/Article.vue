@@ -20,18 +20,19 @@
 		<div class="container-main">
 			<div class="container-main-left">
 				<p style="font-size: 20px;">最近更新</p>
-				<article-item class="topItem" v-for="(item, index) in contentList" :key="index" :title="item.title" :content="item.content"
-				 :url="item.url" :visits="item.visits" :publicationDate="item.publicationDate" :imgSrc="item.imgSrc" :isTop="item.isTop"
-				 :tag="item.tag"></article-item>
+				<article-item class="topItem" v-for="(item, index) in contentList" :key="index" :id="item.bID" :title="item.btitle" :content="item.bRemark"
+				 :url="item.url" :visits="item.btraffic" :publicationDate="item.publicationDate" :imgSrc="item.imgSrc" :isTop="item.isTop"
+				 :tag="item.bcategory"></article-item>
 				<!-- 页码导航 -->
 				<div align="center" class="pageNavigation">
-					<el-pagination background layout="prev, pager, next" :total="totalContent">
+					<el-pagination ref="pageination" background layout="prev, pager, next" :total="totalContent" @current-change="currentPageChange">
 					</el-pagination>
 				</div>
 			</div>
 			<!-- 右侧其它信息 -->
 			<div class="container-main-right">
-				<profile class="profile" :Nickname="profile.NickName" :city="profile.city" :introduce="profile.introduce" :headProtrait="profile.headProtrait"></profile>
+				<profile class="profile" :Nickname="profile.NickName" :city="profile.city" :introduce="profile.introduce"
+				 :headProtrait="profile.headProtrait"></profile>
 			</div>
 		</div>
 	</div>
@@ -75,125 +76,50 @@
 					city: '南宁',
 					introduce: '这里是一段自我介绍这里是一段自我介绍这里是一段自我介绍这里是一段自我介绍这里是一段自我介绍这里是一段自我介绍这里是一段自我介绍'
 				},
-				contentList: [ //指定文章列表
-					{
-						title: "标题1",
-						content: "正文内容1",
-						url: "#",
-						publicationDate: "2020年08月02日",
-						visits: 999,
-						imgSrc: "",
-						isTop: true, //是否置顶
-						tag: "" //标签
-					},
-					{
-						title: "标题2",
-						content: "正文内容2",
-						url: "#",
-						publicationDate: "2020年08月03日",
-						visits: 9999,
-						imgSrc: "/img/homebg.jpg",
-						isTop: true,
-						tag: "" //标签	
-					},
-					{
-						title: "标题3",
-						content: "正文内容3",
-						url: "#",
-						publicationDate: "2020年08月03日",
-						visits: 9999,
-						imgSrc: "/img/homebg.jpg",
-						isTop: false,
-						tag: "随笔" //标签	
-					},
-					{
-						title: "标题4",
-						content: "正文内容4",
-						url: "#",
-						publicationDate: "2020年08月03日",
-						visits: 9999,
-						imgSrc: "/img/homebg.jpg",
-						isTop: false,
-						tag: "杂谈" //标签	
-					},
-					{
-						title: "标题5",
-						content: "正文内容5",
-						url: "#",
-						publicationDate: "2020年08月03日",
-						visits: 9999,
-						imgSrc: "/img/homebg.jpg",
-						isTop: false,
-						tag: "教程" //标签	
-					},
-					{
-						title: "标题6",
-						content: "正文内容6",
-						url: "#",
-						publicationDate: "2020年08月03日",
-						visits: 9999,
-						imgSrc: "/img/homebg.jpg",
-						isTop: false,
-						tag: "随笔" //标签	
-					},
-					{
-						title: "标题7",
-						content: "正文内容7",
-						url: "#",
-						publicationDate: "2020年08月03日",
-						visits: 9999,
-						imgSrc: "/img/homebg.jpg",
-						isTop: false,
-						tag: "随笔" //标签	
-					},
-					{
-						title: "标题8",
-						content: "正文内容8",
-						url: "#",
-						publicationDate: "2020年08月03日",
-						visits: 9999,
-						imgSrc: "/img/homebg.jpg",
-						isTop: false,
-						tag: "教程" //标签	
-					},
-					{
-						title: "标题9",
-						content: "正文内容9",
-						url: "#",
-						publicationDate: "2020年08月03日",
-						visits: 9999,
-						imgSrc: "/img/homebg.jpg",
-						isTop: false,
-						tag: "随笔" //标签	
-					},
-					{
-						title: "标题10",
-						content: "正文内容10",
-						url: "#",
-						publicationDate: "2020年08月03日",
-						visits: 9999,
-						imgSrc: "/img/homebg.jpg",
-						isTop: false,
-						tag: "随笔" //标签	
-					}
-				]
+				totalContent: 10, //文章总数
+				contentList: []//指定文章列表
 			}
 		},
 		computed: {
-			totalContent() {
-				return this.contentList.length
-			}
+
 		},
 		methods: {
 			onSubmit() {
 				this.$emit('onSearch', this.searchForm.query)
+			},
+			//根据类型和页码获取博客列表
+			getContentList(bcategory, page, pageSize, func){
+				console.log(`查询第${page}页博客列表`)
+				this.$api.get("Blog", {
+					bcategory: bcategory,
+					page: page,
+					pageSize: pageSize
+				}, r => {
+					this.totalContent = r.response.dataCount
+					this.contentList = r.response.data
+					this.$bus.$emit('reloadContent')
+					if(func)
+						func(r)
+				});
+			},
+			//页码变更
+			currentPageChange(page){
+				let pageSize = this.$refs.pageination.pageSize
+				this.getContentList('', page, pageSize, ()=> {
+					//返回顶部
+					//console.log("回到顶部")
+					window.scrollTo(0,0)
+				})
 			}
 		},
 		mounted() {
-
+			let page = this.$refs.pageination.currentPage
+			let pageSize = this.$refs.pageination.pageSize
+			// console.log(this.$refs.pageination)
+			this.getContentList('', page, pageSize)
 		},
-		beforeRouteEnter(to, from, next){
-			next()					
+		beforeRouteEnter(to, from, next) {
+			next()
 		}
 	}
 </script>

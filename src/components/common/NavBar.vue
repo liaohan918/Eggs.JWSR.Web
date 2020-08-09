@@ -22,7 +22,7 @@
 			</el-col>
 			<el-col :md="2">
 				<div class="top-write">
-					<el-button type="primary">写文章</el-button>
+					<el-button type="primary" @click="toEditor">写文章</el-button>
 				</div>
 			</el-col>
 		</el-row>
@@ -66,6 +66,9 @@
 			},
 			onQuery() {
 				this.$emit('onQuery', this.query)
+			},
+			toEditor(){
+				this.$emit('toEditor')
 			}
 		},
 		created() {

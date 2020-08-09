@@ -2,7 +2,7 @@
 	<div id="ArticleItem" :class="isTop ? 'istop': 'common'">
 		<!-- 上 -->
 		<div class="top">
-			<a :href="url">
+			<a href="javascript:void(0);" @click="toDetail">
 				<div :class=" this.isTop? 'title-isTop':'title'">
 					<span v-if="isTop">[置顶]</span>
 					<span v-else>
@@ -16,7 +16,7 @@
 		<div class="center">
 			<!-- 封面 -->
 			<div class="cover" v-if="imgSrc">
-				<a :href="url"><img :src="imgSrc" alt=""></a>
+				<a href="javascript:void(0);" @click="toDetail"><img :src="imgSrc" alt=""></a>
 			</div>
 			<!-- 文章中文缩略 -->
 			<div class="content">
@@ -25,7 +25,7 @@
 		</div>
 		<!-- 下 -->
 		<div class="bottom">
-			<a class="readAll" :href="url">[阅读全文]</a>
+			<a class="readAll" href="javascript:void(0);" @click="toDetail">[阅读全文]</a>
 			<i class="el-icon-time">{{publicationDate}}</i>
 			<i class="el-icon-view">{{visits}}</i>
 		</div>
@@ -35,6 +35,10 @@
 	export default {
 		name: "ArticleItem",
 		props: {
+			id:{
+				type: Number,
+				default: 0
+			},
 			title: {
 				type: String,
 				default: "文章的标题"
@@ -69,7 +73,15 @@
 			}
 		},
 		methods: {
-
+			//跳转到正文
+			toDetail(){
+				this.$router.push({
+					name: 'ArticleDetail',
+					params:{
+						id: this.id
+					}
+				})
+			}
 		},
 		mounted() {}
 	}
@@ -117,6 +129,8 @@
 		-webkit-line-clamp: 5;
 		/*想要显示的行数*/
 		-webkit-box-orient: vertical;
+		/* 强制英文换行 */
+		word-break:break-all;
 	}
 
 	.bottom {

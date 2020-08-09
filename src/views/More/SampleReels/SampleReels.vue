@@ -93,6 +93,8 @@
 		},
 		methods: {
 			handleScroll(e) {
+				if(!this.$refs.waterfall.$el)
+					return
 				let waterfallHeight = this.$refs.waterfall.$el.offsetHeight //瀑布流布局高度
 				let colsHeightArrMax = Math.max(...this.$refs.waterfall.colsHeightArr) //最高的那一列
 				if (colsHeightArrMax > waterfallHeight) { //图片高度已达瀑布流容器底部
