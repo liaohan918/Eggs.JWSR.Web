@@ -5,9 +5,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 	state: {
-		baseUrl: "http://127.0.0.9070",
+		baseUrl: "http://127.0.0.1:9070",
 		formDatas: null,
-		token: '', //token令牌
+		token: null, //token令牌
 		client: {
 			clientId: 'eggsjwsrweb',
 			clientSecret: 'woaini123',

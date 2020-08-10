@@ -10,6 +10,8 @@ const LoginCallbackView = () => import('views/LoginCallbackView.vue')
 const ArticleDetail = () => import('views/More/Article/ArticleDetail.vue')
 const Editor = () => import('views/More/Article/Editor.vue')
 
+import applicationUserManager from "../auth/applicationusermanager.js";
+
 Vue.use(VueRouter)
 
 const routes = [{
@@ -25,7 +27,7 @@ const routes = [{
 		name: 'callback',
 		component: LoginCallbackView,
 		meta: {
-			keepAlive: true
+			keepAlive: false
 		}
 	},
 	{
@@ -66,7 +68,10 @@ const routes = [{
 			{
 				path: 'Editor',
 				name: "Editor",
-				component: Editor
+				component: Editor,
+				meta:{
+					requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
+				}
 			}
 		]
 	}
@@ -84,9 +89,11 @@ router.beforeEach((to, from, next) => {
 		storeTemp.commit("saveToken", window.localStorage.Token);
 	}
 	if (to.meta.requireAuth) {
+		console.log("当前路由需要权限")
 		// 判断该路由是否需要登录权限
-		if (storeTemp.state.token) {
+		if (storeTemp.state.token && storeTemp.state.token != 'undefined') {
 			// 通过vuex state获取当前的token是否存在
+			console.log("已有token:" + storeTemp.state.token)
 			next();
 		} else {
 			applicationUserManager.login();

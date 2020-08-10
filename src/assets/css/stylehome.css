@@ -1337,12 +1337,13 @@ ul.h-list > li {
     content: "・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・"
 }
 
-.article img {
+.article >>> img {
     position: relative;
     display: block;
     margin: 0 auto;
     background: white;
-    transition: all .24s ease
+    transition: all .24s ease;
+	max-width: 100%
 }
 
 @media (max-width: 820px) {

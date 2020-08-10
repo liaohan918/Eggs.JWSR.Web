@@ -7,7 +7,7 @@ class ApplicationUserManager extends UserManager {
       client_id: 'eggsjwsrweb',
       redirect_uri: 'http://127.0.0.1:8081/callback',
       response_type: 'id_token token',
-      scope: 'openid profile roles blog.core.api.BlogModule',
+      scope: 'roles blog.core.api openid profile',
       post_logout_redirect_uri: 'http://127.0.0.1:8081'
     })
   }

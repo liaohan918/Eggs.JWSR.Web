@@ -24,7 +24,7 @@
 										{{dat.digest}}
 									</p>
 								</blockquote>
-								<article v-html="dat.bcontent"></article>
+								<article class="articleContent" v-html="dat.bcontent"></article>
 							</div>
 							<div class="article-tags tags">
 								<a href="javascript:void(0);">{{dat.bcategory}}</a>
@@ -99,5 +99,4 @@
 	};
 </script>
 <style scoped src="../../../assets/css/stylehome.css">
-	
 </style>

@@ -12,7 +12,9 @@
 
 					<el-form-item label="分类">
 						<el-select v-model="infoForm.bcategory" placeholder="请选择文章分类">
-							<el-option label="技术博文" value="技术博文"></el-option>
+							<el-option label="杂谈" value="杂谈"></el-option>
+							<el-option label="随笔" value="随笔"></el-option>
+							<el-option label="教程" value="教程"></el-option>
 						</el-select>
 					</el-form-item>
 
@@ -48,14 +50,15 @@
 	import "quill/dist/quill.core.css";
 	import "quill/dist/quill.snow.css";
 	import "quill/dist/quill.bubble.css";
+	import store from "store/index.js";
 
 	export default {
 		data() {
 			return {
 				infoForm: {
 					btitle: "",
-					bsubmitter: "",
-					bcategory: "技术博文",
+					bsubmitter: "甲午山人",
+					bcategory: "随笔",
 					bcontent: ""
 				},
 				editorOption: {},
@@ -86,7 +89,8 @@
 			this.editorOption = quillRedefine({
 				// 图片上传的设置
 				uploadConfig: {
-					action: "/images/Upload/Pic", // 必填参数 图片上传地址
+					action: store.state.baseUrl + "/images/Upload/Pic", // 必填参数 图片上传地址
+					//action: "http://192.168.50.1:8000/images/Upload/Pic",
 					// 必选参数  res是一个函数，函数接收的response为上传成功时服务器返回的数据
 					// 你必须把返回的数据中所包含n的图片地址 return 回去
 					res: respnse => {
