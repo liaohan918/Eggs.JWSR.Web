@@ -72,6 +72,14 @@ const routes = [{
 				meta:{
 					requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
 				}
+			},
+			{
+				path: 'Upload',
+				name: 'Upload',
+				component : () => import('views/More/SampleReels/Upload.vue'),
+				meta:{
+					requireAuth: true
+				}
 			}
 		]
 	}

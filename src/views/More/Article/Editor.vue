@@ -21,6 +21,11 @@
 					<el-form-item label="作者" prop="bsubmitter">
 						<el-input v-model="infoForm.bsubmitter"></el-input>
 					</el-form-item>
+					<!-- 是否置顶 -->
+					<el-form-item label="置顶" prop="bsubmitter">
+						<el-switch v-model="infoForm.isTop"  active-color="#13ce66"  inactive-color="#ff4949">
+						</el-switch>
+					</el-form-item>
 					<!--使用编辑器
           -->
 					<el-form-item label="详细" prop="bcontent">
@@ -59,7 +64,8 @@
 					btitle: "",
 					bsubmitter: "甲午山人",
 					bcategory: "随笔",
-					bcontent: ""
+					bcontent: "",
+					isTop: false
 				},
 				editorOption: {},
 				//表单验证

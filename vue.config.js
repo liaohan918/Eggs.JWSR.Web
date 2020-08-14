@@ -28,7 +28,7 @@ module.exports = {
 		proxy: {
 			// 配置多个代理
 			"/api": {
-				target: "http://127.0.0.1:9070", //这里改成你自己的后端api端口地址，记得每次修改，都需要重新build
+				target: "http://127.0.0.1:9070/api", //这里改成你自己的后端api端口地址，记得每次修改，都需要重新build
 				ws: true,
 				changeOrigin: true,
 				pathRewrite: {
@@ -36,8 +36,13 @@ module.exports = {
 					"^/apb": "" // 替换target中的请求地址
 				}
 			},
-			"/images": {
-				target: "http://192.168.50.1:8000"
+			"/images": { //当请求路径中以images开头时，用下面这个路径代替
+				target: "http://192.168.50.1:8000",//这里为什么我没走路由，因为路由那里配置的时候没考虑到图片服务器，而图片服务器目前是和博客服务器是一台，所以这里直接写博客服务器地址
+				changeOrigin: true
+			},
+			"/SampleReels": { //当请求路径中以SampleReels开头时，用下面这个路径代替
+				target: "http://127.0.0.1:9070/SampleReels",
+				changeOrigin: true
 			}
 		}
 	}

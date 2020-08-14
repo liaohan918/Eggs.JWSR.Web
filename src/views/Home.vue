@@ -341,8 +341,8 @@
 	.footer {
 		padding: 100px 361px;
 		text-align: center;
-		/* background-color: #fbfcff; */
-		background-color: #282828;
+		color: #888; 
+		background-color: #f3f3f3;
 	}
 
 	.qr-code {

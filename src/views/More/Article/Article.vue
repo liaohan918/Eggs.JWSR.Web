@@ -21,8 +21,7 @@
 			<div class="container-main-left">
 				<p style="font-size: 20px;">最近更新</p>
 				<article-item class="topItem" v-for="(item, index) in contentList" :key="index" :id="item.bID" :title="item.btitle" :content="item.bRemark"
-				 :url="item.url" :visits="item.btraffic" :publicationDate="item.publicationDate" :imgSrc="item.imgSrc" :isTop="item.isTop"
-				 :tag="item.bcategory"></article-item>
+				 :url="item.url" :visits="item.btraffic" :publicationDate="item.publicationDate" :isTop="item.isTop" :tag="item.bcategory" :fullText="item.bcontent"></article-item>
 				<!-- 页码导航 -->
 				<div align="center" class="pageNavigation">
 					<el-pagination ref="pageination" background layout="prev, pager, next" :total="totalContent" @current-change="currentPageChange">
@@ -104,6 +103,7 @@
 			},
 			//页码变更
 			currentPageChange(page){
+				console.log("页码变更:"+ page)
 				let pageSize = this.$refs.pageination.pageSize
 				this.getContentList('', page, pageSize, ()=> {
 					//返回顶部
@@ -112,10 +112,28 @@
 				})
 			}
 		},
+		beforeCreate() {			
+			this.$bus.$on("onCatagoryChange", payload => {//注册类别变更事件
+				console.log(`路由页面：${payload.routeName},类别变更,变更的类别:${payload.catagory}`)
+				if(payload.routeName != "Article")
+					return
+				let catagory = payload.catagory
+				let pageSize = this.$refs.pageination.pageSize
+				// console.log(this.$refs.pageination)
+				if(catagory == "最新")
+					catagory = ''
+				this.getContentList(catagory, 1, pageSize, ()=> {
+					//返回顶部
+					//console.log("回到顶部")
+					window.scrollTo(0,0)
+				})
+			})
+		},
 		mounted() {
 			let page = this.$refs.pageination.currentPage
 			let pageSize = this.$refs.pageination.pageSize
 			// console.log(this.$refs.pageination)
+				console.log(`DOM元素渲染完成`)
 			this.getContentList('', page, pageSize)
 		},
 		beforeRouteEnter(to, from, next) {

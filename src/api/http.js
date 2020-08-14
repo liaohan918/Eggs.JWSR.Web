@@ -3,7 +3,10 @@ import router from "../router/index.js";
 import applicationUserManager from "../auth/applicationusermanager";
 
 // 配置API接口地址
-var root = store.state.baseUrl + "/api"//"http://127.0.0.1:9070/api";//测试本地，用CORS跨域
+var rootApi = store.state.baseUrl + "/api"//"http://127.0.0.1:9070/api";//测试本地，用CORS跨域
+
+var baseUrl = store.state.baseUrl
+
 // 引用axios
 var axios = require("axios");
 // 自定义判断元素类型JS
@@ -73,7 +76,7 @@ function apiAxios(method, url, params, success, failure) {
     url: url,
     data: method === "POST" || method === "PUT" ? params : null,
     params: method === "GET" || method === "DELETE" ? params : null,
-    baseURL: root,
+    baseURL: rootApi,
     // `headers` 是即将被发送的自定义请求头
     withCredentials: false
   })
@@ -82,6 +85,31 @@ function apiAxios(method, url, params, success, failure) {
     })
     .catch(function(err) {
       let res = err.response;
+      if (err) {
+        window.alert("api error, HTTP CODE: " + res.status);
+      }
+    });
+}
+
+function baseAxios(method, url, params, success, failure) {
+  if (params) {
+    params = filterNull(params);
+  }
+  axios({
+    method: method,
+    url: url,
+    data: method === "POST" || method === "PUT" ? params : null,
+    params: method === "GET" || method === "DELETE" ? params : null,
+    baseURL: baseUrl,
+    // `headers` 是即将被发送的自定义请求头
+    withCredentials: false
+  })
+    .then(function(res) {
+      success(res.data);
+    })
+    .catch(function(err) {
+      let res = err.response;
+	  console.log(err)
       if (err) {
         window.alert("api error, HTTP CODE: " + res.status);
       }
@@ -101,5 +129,11 @@ export default {
   },
   delete: function(url, params, success, failure) {
     return apiAxios("DELETE", url, params, success, failure);
+  },
+  basePost(url, params, success, failure){
+	  return baseAxios("POST", url, params, success, failure);
+  },
+  baseGet(url, params, success, failure){
+	  return baseAxios("GET", url, params, success, failure);
   }
 };

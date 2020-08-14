@@ -3,7 +3,7 @@
 		<el-row>
 			<el-col :md="4">
 				<div class="top-logo" @click="toRoute(0)">
-					<img src="~assets/logo.png" style="width: 38px; height: 38px" /><a style="color: #333333 ">{{title}}</a>
+					<img src="~assets/logo.png" style="width: 38px; height: 38px" /><a href="javascript:void(0);" style="color: #333333 ">{{title}}</a>
 				</div>
 			</el-col>
 			<el-col :md="12">
@@ -22,7 +22,7 @@
 			</el-col>
 			<el-col :md="2">
 				<div class="top-write">
-					<el-button type="primary" @click="toEditor">写文章</el-button>
+					<el-button type="primary" @click="toEditor">{{editorText}}</el-button>
 				</div>
 			</el-col>
 		</el-row>
@@ -43,6 +43,10 @@
 			currentIndex: {
 				type: Number,
 				default: 1
+			},
+			editorText: {
+				type: String,
+				default: "写文章"
 			}
 		},
 		data() {

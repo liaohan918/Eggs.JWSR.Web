@@ -3,7 +3,8 @@
 		<!-- 顶部导航栏 -->
 		<div class="top" ref="top">
 			<div class="nav">
-				<nav-bar :title="title" :links="NavBarItemList" :currentIndex="activePageIndex" @toRoute="toRoute" @onQuery="onQuery" @toEditor="toEditor"></nav-bar>
+				<nav-bar :title="title" :links="NavBarItemList" :currentIndex="activePageIndex" :editorText="editorText" @toRoute="toRoute"
+				 @onQuery="onQuery" @toEditor="toEditor"></nav-bar>
 			</div>
 		</div>
 		<!-- 中间内容展示区 -->
@@ -13,11 +14,11 @@
 			</keep-alive>
 		</div>
 		<!-- 左侧导航栏 -->
-		<div class="navigation"	:class="{'navigation-fixed' : ScrollOverSwiper, 'navigation-visibilty-hidden' : !showLeftNavigation }" 
-			:style="{'top' : this.isSampleReels ? this.leftNavigationStopOffSet+'px' : ''}">
+		<div class="navigation" :class="{'navigation-fixed' : ScrollOverSwiper, 'navigation-visibilty-hidden' : !showLeftNavigation }"
+		 :style="{'top' : this.isSampleReels ? this.leftNavigationStopOffSet+'px' : ''}">
 			<el-row class="tac">
 				<el-col>
-					<el-menu default-active="1" class="el-menu-vertical-demo">
+					<el-menu default-active="1" class="el-menu-vertical-demo" @select="catagoryChange">
 						<el-menu-item v-for="(item,index) in classify" :key="index" :index="item.index">
 							<span slot="title">{{item.text}}</span>
 						</el-menu-item>
@@ -97,13 +98,14 @@
 						index: "4"
 					}
 				],
+				editorText: "写文章",
 				ScrollOverSwiper: false, //轮播图是否离开界面
 				leftNavigationOffSetTop: 580, //左侧导航栏偏移量，当滚动大于该偏移量时停靠
 				leftNavigationStopOffSet: 75, //左侧导航栏停靠位置
-				isFixStatementBottom: false,//是否让底部声明固定在页面底部Fix
+				isFixStatementBottom: false, //是否让底部声明固定在页面底部Fix
 				showStatement: true, //是否显示底部声明
 				showLeftNavigation: true, //是否显示左侧导航条
-				isSampleReels: false//当前页是否为作品集
+				isSampleReels: false //当前页是否为作品集
 			}
 		},
 		components: {
@@ -126,61 +128,133 @@
 					this.ScrollOverSwiper = false
 				}
 			},
-			toRoute(payload) {			
+			toRoute(payload) {
 				if (payload == this.$router.currentRoute.path)
 					return
 				this.$router.push({
 					path: payload
+				}).then(res => {
+					//console.log(res)
+					//this.getCatagory(res.name)
+					if (res.name == "SampleReels" || res.name == "Upload") {
+						this.editorText = "上传图片"
+					} else {
+						this.editorText = "写文章"
+					}
 				})
 			},
-			toEditor(){
-				// console.log("跳转到写文章界面")
-				this.$router.push({
-					name: 'Editor'
-				})
+			toEditor() {
+				if (this.$route.name == "SampleReels" || this.$route.name == "Upload") {
+					this.$router.push({
+						name: 'Upload'
+					})
+				} else {
+					this.$router.push({
+						name: 'Editor'
+					})
+				}
 			},
 			//是否出现垂直滚动条
 			hasScrollbar() {
-			    //return document.body.scrollHeight > (window.innerHeight || document.documentElement.clientHeight);
+				//return document.body.scrollHeight > (window.innerHeight || document.documentElement.clientHeight);
 			},
 			//当container高度不足时，声明部分div就固定在底部
 			computeIsFixStatementBottom() {
 				let bodyHeight = document.body.scrollHeight //body高度
 				let screenHeight = document.documentElement.clientHeight //屏幕高
-				if (bodyHeight < screenHeight) {
+				//console.log(`判断底部声明的停留方式,bodyHeight:${bodyHeight},screenHeight:${screenHeight}`)
+				if (bodyHeight + 218 < screenHeight) { //218是底部声明高度
 					this.isFixStatementBottom = true
 				} else {
 					this.isFixStatementBottom = false
 				}
 			},
-			computedStatementAndNavigationState(routeName){//计算底部声明和左侧导航栏的状态
+			computedStatementAndNavigationState(routeName) { //计算底部声明和左侧导航栏的状态
 				if (routeName == "Home") {
 					this.$destroy() //返回首页需要销毁发现页组件实例，因为发现页是被缓存的，点击首页后再回来，导航会停留在首页标签
 				} else if (routeName == "Article") {
 					this.leftNavigationOffSetTop = 580
 					this.showStatement = true
 					this.showLeftNavigation = true
-				} else if(routeName == "SampleReels"){
+				} else if (routeName == "SampleReels") {
 					this.leftNavigationOffSetTop = 75
 					this.showStatement = false
 					this.showLeftNavigation = true
-				} else{
+				} else {
 					this.showStatement = false
 					this.showLeftNavigation = false
 				}
-				if(routeName == "SampleReels"){
+				if (routeName == "SampleReels") {
 					this.isSampleReels = true
-				}else{
+				} else {
 					this.isSampleReels = false
+				}
+			},
+			//变更分类
+			catagoryChange(index) {
+				var catagory = this.classify[index - 1].text //分类
+				this.$bus.$emit('onCatagoryChange', {
+					catagory: catagory,
+					routeName: this.$route.name
+				}) //分类变更事件
+			},
+			getCatagory(routeName) {
+				console.log("获得导航分类：" + routeName)
+				if (routeName == "Article") {
+					this.editorText = "写文章"
+					this.classify = [{
+							text: "最新",
+							index: "1" //index值要是字符串
+						},
+						{
+							text: "杂谈",
+							index: "2"
+						},
+						{
+							text: "随笔",
+							index: "3"
+						},
+						{
+							text: "教程",
+							index: "4"
+						}
+					]
+				} else if (routeName == "SampleReels") {
+					this.editorText = "上传图片"
+					this.classify = [{
+							text: "最新",
+							index: "1" //index值要是字符串
+						}, {
+							text: "国画",
+							index: "2" //index值要是字符串
+						},
+						{
+							text: "书法",
+							index: "3"
+						},
+						{
+							text: "油画",
+							index: "4"
+						},
+						{
+							text: "其它",
+							index: "5"
+						}
+					]
 				}
 			}
 		},
-		computed:{
-		},
+		computed: {},
 		watch: {
 			$route(to, from) {
 				this.computedStatementAndNavigationState(to.name)
 				this.computeIsFixStatementBottom()
+				this.getCatagory(to.name)
+				if(to.name == "SampleReels"){
+					this.activePageIndex = 2
+				}else{
+					this.activePageIndex = 1					
+				}
 			}
 		},
 		created() {
@@ -191,7 +265,7 @@
 			})
 		},
 		mounted() {
-			window.addEventListener('scroll', this.handleScroll)//监听页面滚动事件
+			window.addEventListener('scroll', this.handleScroll) //监听页面滚动事件
 			this.computedStatementAndNavigationState(this.$route.name)
 		},
 		updated() {
@@ -199,10 +273,14 @@
 		},
 		beforeRouteEnter(to, from, next) {
 			next(vm => {
-				if (to.path == '/More/SampleReels') {//选择作品画面并刷新时
+				if (to.name == 'SampleReels' || to.name == "Upload") { //选择作品画面并刷新时
 					vm.activePageIndex = 2
 					vm.showStatement = false
+					vm.editorText = "上传图片"
+				} else {
+					vm.editorText = "写文章"
 				}
+				vm.getCatagory(to.name)
 			})
 		}
 	}
@@ -243,9 +321,9 @@
 		left: 250px;
 		width: 100px;
 	}
-	
+
 	/* 隐藏左侧导航栏 */
-	.navigation-visibilty-hidden{
+	.navigation-visibilty-hidden {
 		visibility: hidden;
 	}
 
@@ -271,7 +349,8 @@
 		padding: 0px 361px;
 		height: 218px;
 		text-align: center;
-		background-color: #282828;
+		color: #888;
+		background-color: #f3f3f3;
 		width: 100%;
 	}
 

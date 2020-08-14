@@ -16,7 +16,7 @@
 		<div class="center">
 			<!-- 封面 -->
 			<div class="cover" v-if="imgSrc">
-				<a href="javascript:void(0);" @click="toDetail"><img :src="imgSrc" alt=""></a>
+				<a href="javascript:void(0);" @click="toDetail"><img :src="imgSrc"></a>
 			</div>
 			<!-- 文章中文缩略 -->
 			<div class="content">
@@ -35,7 +35,7 @@
 	export default {
 		name: "ArticleItem",
 		props: {
-			id:{
+			id: {
 				type: Number,
 				default: 0
 			},
@@ -47,6 +47,10 @@
 				type: String,
 				default: `文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文
 				文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文章的正文文`
+			},
+			fullText: { //全文
+				type: String,
+				default: ''
 			},
 			url: { //文章链接
 				type: String,
@@ -60,30 +64,40 @@
 				type: Number,
 				default: 9999
 			},
-			imgSrc: {
-				type: String,
-				default: ""
-			},
 			isTop: true,
 			tag: ""
 		},
 		data() {
 			return {
-
+				imgSrc: "" //文章封面图片标签文本
 			}
 		},
 		methods: {
 			//跳转到正文
-			toDetail(){
+			toDetail() {
 				this.$router.push({
 					name: 'ArticleDetail',
-					params:{
+					params: {
 						id: this.id
 					}
 				})
+			},
+			//从全文中截取第一个img标签
+			getFirstImgTag() {
+				var imgReg = /<img.*?(?:>|\/>)/gi //img标签正则
+				var arr = this.fullText.match(imgReg)
+				if (arr && arr.length >= 1)
+					return arr[0]
 			}
 		},
-		mounted() {}
+		mounted() {
+			var imgTag = this.getFirstImgTag()
+			if (imgTag) {
+				imgTag.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, (match, capture) => {
+					this.imgSrc = capture
+				})
+			}
+		}
 	}
 </script>
 <style scoped>
@@ -95,17 +109,18 @@
 	.istop {
 		background-color: #eee;
 		box-shadow: 10px 0px 0px 0px #5EB309 inset;
-		border-bottom: 1px solid #828282;
+		border-bottom: 1px solid #828282;
 	}
-	
-	.common{		
+
+	.common {
 		box-shadow: 0 1px 1px rgba(100, 100, 100, 0.2);
 	}
 
 	.title {
 		font-size: 20px;
 	}
-	.title-isTop{
+
+	.title-isTop {
 		font-size: 25px;
 	}
 
@@ -130,7 +145,7 @@
 		/*想要显示的行数*/
 		-webkit-box-orient: vertical;
 		/* 强制英文换行 */
-		word-break:break-all;
+		word-break: break-all;
 	}
 
 	.bottom {

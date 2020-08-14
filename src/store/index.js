@@ -7,6 +7,8 @@ export default new Vuex.Store({
 	state: {
 		baseUrl: "http://127.0.0.1:9070",
 		formDatas: null,
+		uploadUrl: "http://127.0.0.1:9070/SampleReels/FileUpload/FormSingleFileUpload",//图片上传路径
+		sampleReelImgServices: "http://127.0.0.1:9000",//MinIO地址
 		token: null, //token令牌
 		client: {
 			clientId: 'eggsjwsrweb',
